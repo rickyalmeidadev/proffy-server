@@ -17,6 +17,8 @@
     "rules": {
         "no-console": "off",
         "no-unused-vars": "off",
-        "arrow-parens": "off"
+        "arrow-parens": "off",
+        "import/extensions": "off",
+        "import/no-unresolved": "off"
     }
 }
