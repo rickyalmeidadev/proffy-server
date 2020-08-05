@@ -9,6 +9,40 @@ interface IScheduleItem {
 }
 
 export default class ClassesController {
+  async index(request: Request, response: Response): Promise<Response> {
+    const { week_day, subject, time } = request.query;
+
+    if (!week_day || !subject || !time) {
+      return response.status(400).json({
+        message: 'Missing required filters to search classes',
+      });
+    }
+
+    if (typeof week_day !== 'string' || typeof subject !== 'string' || typeof time !== 'string') {
+      return response.status(400).json({
+        message: 'Invalid query params',
+      });
+    }
+
+    const timeInMinutes = convertHoursToMinutes(time);
+
+    const classes = await db('classes')
+      .whereExists(function () {
+        this
+          .select('class_schedule.*')
+          .from('class_schedule')
+          .whereRaw('`class_schedule`.`class_id` = `classes`.`id`')
+          .whereRaw('`class_schedule`.`week_day` = ??', [Number(week_day)])
+          .whereRaw('`class_schedule`.`from` <= ??', [timeInMinutes])
+          .whereRaw('`class_schedule`.`to` > ??', [timeInMinutes]);
+      })
+      .where('classes.subject', '=', subject)
+      .join('users', 'classes.user_id', '=', 'users.id')
+      .select(['classes.*', 'users.*']);
+
+    return response.json(classes);
+  }
+
   async create(request: Request, response: Response): Promise<Response> {
     const {
       name,
