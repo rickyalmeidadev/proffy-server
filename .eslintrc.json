@@ -21,6 +21,7 @@
         "import/extensions": "off",
         "import/no-unresolved": "off",
         "camelcase": "off",
-        "class-methods-use-this": "off"
+        "class-methods-use-this": "off",
+        "func-names": "off"
     }
 }
