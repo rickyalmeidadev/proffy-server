@@ -1,12 +1,15 @@
 import { Router } from 'express';
 import ClassesController from './controllers/ClassesController';
-import ConnectionController from './controllers/ConnectionsController';
+import ConnectionsController from './controllers/ConnectionsController';
 
 const routes = Router();
 
-const { create, index } = new ClassesController();
+const classesController = new ClassesController();
+const connectionsController = new ConnectionsController();
 
-routes.get('/classes', index);
-routes.post('/classes', create);
+routes.get('/classes', classesController.index);
+routes.post('/classes', classesController.create);
+
+routes.post('/connections', connectionsController.create);
 
 export default routes;
